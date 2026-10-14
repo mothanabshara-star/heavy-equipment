@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- تصحيح نوع الـ icon من img إلى image/jpeg -->
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heavy Equipment</title>
+    <style>  
+      @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Cairo', sans-serif ; 
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        font-family: 'Cairo', sans-serif ;
+      }
+
+      header {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #2c1b12;
+        padding: 50px 30px;
+        height: 80px;
+      }
+
+      header img {
+        width: 120px;
+        height: auto;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+        gap: 20px;
+      }
+
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      nav a:hover {
+        color: #f39c12;
+      }
+
+      .equipment-container {
+        padding: 30px 50px;
+        background-color: #1a100a;
+        min-height: calc(100vh - 80px);
+      }
+
+      .page-title {
+        text-align: center;
+        color: #f39c12;
+        margin-bottom: 30px;
+        font-size: 32px;
+      }
+
+      /* شبكة الكروت Grid */
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+      }
+
+      /* تصميم الكرت */
+      .card {
+        background-color: #2c1b12;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(243, 156, 18, 0.2);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 20px rgba(243, 156, 18, 0.3);
+      }
+
+      .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .card-content {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: space-between;
+      }
+
+      .card-content h3 {
+        color: #ffffff;
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .card-content .price {
+        color: #cccccc;
+        font-size: 16px;
+        margin-bottom: 15px;
+      }
+
+      .card-content .price span {
+        color: #f39c12;
+        font-weight: bold;
+      }
+
+      /* زر استأجر */
+      .rent-btn {
+        background-color: #f39c12;
+        color: #1a100a;
+        border: none;
+        padding: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .rent-btn:hover {
+        background-color: #e67e22;
+        color: #ffffff;
+      }
+
+      /* خلفية النافذة المنبثقة */
+      .modal-overlay {
+        display: none; 
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.75);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        direction: rtl;
+      }
+
+      /* بطاقة الاستئجار */
+      .rental-card {
+        background: #2b231d; 
+        color: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        width: 320px;
+        border: 1px solid #d4af37;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        position: relative;
+        text-align: center;
+      }
+
+      /* زر الإغلاق X */
+      .close-btn {
+        position: absolute;
+        top: 10px; left: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #aaa;
+      }
+
+      .form-group {
+        margin: 15px 0;
+        text-align: right;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #555;
+        background: #1e1814;
+        color: #fff;
+        box-sizing: border-box;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+        font-size: 15px;
+      }
+
+      .total-row {
+        font-weight: bold;
+        font-size: 18px;
+        color: #ffcc00;
+      }
+
+      /* الأزرار */
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .confirm-btn {
+        flex: 2;
+        background-color: #ffcc00;
+        color: #000;
+        border: none;
+        padding: 10px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .cancel-btn {
+        flex: 1;
+        background-color: #444;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .confirm-btn:hover { background-color: #e6b800; }
+      .cancel-btn:hover { background-color: #555; }
+    </style> 
+</head>
+<body>
+    <header>
+        <img src="logo.jpg" alt="logo">
+        <nav>
+            <ul>
+                <li><a href="page 1.html">الصفحة الرئيسية</a></li>
+                <li><a href="page 2.html">المعدات</a></li>
+                <li><a href="page3.html">من نحن</a></li>
+            </ul>
+        </nav>
+    </header>
+     
+    <main class="equipment-container">
+        <h1 class="page-title">أسطول المعدات المتاحة للاستئجار</h1>
+
+        <div class="cards-grid">
+            
+            <!-- كرت 1 -->
+            <div class="card">
+                <img src="7fara.jpg" alt="حفارة ثقيلة">
+                <div class="card-content">
+                    <h3>حفارة هيدروليكية ثقيلة</h3>
+                    <p class="price">السعر: <span>150 دينار / يوم</span></p>
+                    <button class="rent-btn" onclick="openRentalModal('حفارة هيدروليكية ثقيلة', 150)">استأجر الآن</button>
+                </div>
+            </div>
+
+            <!-- كرت 2 -->
+            <div class="card">
+                <img src="mojnzara.jpg" alt="جرافة مجنزرة">
+                <div class="card-content">
+                    <h3>جرافة مجنزرة D8</h3>
+                    <p class="price">السعر: <span>200 دينار / يوم</span></p>
+                    <button class="rent-btn" onclick="openRentalModal('جرافة مجنزرة D8', 200)">استأجر الآن</button>
+                </div>
+            </div>
+
+            <!-- كرت 3 -->
+            <div class="card">
+                <img src="rafe3a.avif" alt="رافعة برجية">
+                <div class="card-content">
+                    <h3>رافعة برجية 50 طن</h3>
+                    <p class="price">السعر: <span>350 دينار / يوم</span></p>
+                    <button class="rent-btn" onclick="openRentalModal('رافعة برجية 50 طن', 350)">استأجر الآن</button>
+                </div>
+            </div>
+
+            <!-- كرت 4 -->
+            <div class="card">
+                <img src="loder.avif" alt="لودر عجلي">
+                <div class="card-content">
+                    <h3>لودر عجلي كبير</h3>
+                    <p class="price">السعر: <span>120 دينار / يوم</span></p>
+                    <button class="rent-btn" onclick="openRentalModal('لودر عجلي كبير', 120)">استأجر الآن</button>
+                </div>
+            </div>
+
+            <!-- كرت 5 -->
+            <div class="card">
+                <img src="sha7na.jpg" alt="شاحنة تفريغ">
+                <div class="card-content">
+                    <h3>شاحنة تفريغ (قلاب)</h3>
+                    <p class="price">السعر: <span>90 دينار / يوم</span></p>
+                    <button class="rent-btn" onclick="openRentalModal('شاحنة تفريغ (قلاب)', 90)">استأجر الآن</button>
+                </div>
+            </div>
+
+            <!-- كرت 6 -->
+            <div class="card">
+                <img src="md7la.jpg" alt="مدحلة اسفلت">
+                <div class="card-content">
+                    <h3>مدحلة طرق واهتزازات</h3>
+                    <p class="price">السعر: <span>100 دينار / يوم</span></p>
+                    <button class="rent-btn" onclick="openRentalModal('مدحلة طرق واهتزازات', 100)">استأجر الآن</button>
+                </div>
+            </div>
+
+            <!-- كرت 7 -->
+            <div class="card">
+                <img src="mozlek.jpg" alt="رافع شوكية">
+                <div class="card-content">
+                    <h3>رافعة شوكية 10 طن</h3>
+                    <p class="price">السعر: <span>80 دينار / يوم</span></p>
+                    <button class="rent-btn" onclick="openRentalModal('رافعة شوكية 10 طن', 80)">استأجر الآن</button>
+                </div>
+            </div>
+
+            <!-- كرت 8 -->
+            <div class="card">
+                <img src="jrafa ejal.jpg" alt="حفار مائل">
+                <div class="card-content">
+                    <h3>حفار جراف مشترك (باك هو)</h3>
+                    <p class="price">السعر: <span>110 دينار / يوم</span></p>
+                    <button class="rent-btn" onclick="openRentalModal('حفار جراف مشترك (باك هو)', 110)">استأجر الآن</button>
+                </div>
+            </div>
+
+            <!-- كرت 9 -->
+            <div class="card">
+                <img src="jredar.jpg" alt="جريدر تسوية">
+                <div class="card-content">
+                    <h3>جريدر تسوية التربة</h3>
+                    <p class="price">السعر: <span>180 دينار / يوم</span></p>
+                    <button class="rent-btn" onclick="openRentalModal('جريدر تسوية التربة', 180)">استأجر الآن</button>
+                </div>
+            </div>
+
+        </div> 
+    </main>
+
+    <!-- النافذة المنبثقة -->
+    <div id="rentalModal" class="modal-overlay">
+        <div class="rental-card">
+            <span class="close-btn" onclick="closeRentalModal()">&times;</span>
+            
+            <h3 id="equipmentTitle">استئجار معدة</h3>
+            
+            <div class="form-group">
+                <label>تاريخ البداية:</label>
+                <input type="date" id="startDate" onchange="calculateTotal()">
+            </div>
+
+            <div class="form-group">
+                <label>تاريخ النهاية:</label>
+                <input type="date" id="endDate" onchange="calculateTotal()">
+            </div>
+
+            <div class="info-row">
+                <span>عدد الأيام:</span>
+                <span id="daysCount">0</span>
+            </div>
+
+            <div class="info-row">
+                <span>سعر اليوم:</span>
+                <span id="dailyRateDisplay">0 دينار</span>
+            </div>
+
+            <hr>
+
+            <div class="info-row total-row">
+                <span>الإجمالي:</span>
+                <span id="totalPrice">0 دينار</span>
+            </div>
+
+            <div class="actions">
+                <button class="confirm-btn" onclick="confirmRental()">تأكيد الاستئجار</button>
+                <button class="cancel-btn" onclick="closeRentalModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="page2.js"></script>
+</body>
+</html>
